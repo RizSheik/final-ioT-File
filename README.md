@@ -61,8 +61,28 @@ This application is optimized for deployment on Vercel:
 
 1. Push your code to GitHub
 2. Connect your repository to Vercel
-3. Add your environment variables in the Vercel project settings
+3. Add your environment variables in the Vercel project settings:
+   - `NEXT_PUBLIC_FIREBASE_API_KEY`
+   - `NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN`
+   - `NEXT_PUBLIC_FIREBASE_PROJECT_ID`
+   - `NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET`
+   - `NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID`
+   - `NEXT_PUBLIC_FIREBASE_APP_ID`
+   - `NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID`
+   - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY` (optional)
 4. Deploy!
+
+### Environment Variables Setup on Vercel
+
+To set up your environment variables on Vercel:
+
+1. Go to your project dashboard on Vercel
+2. Click on "Settings" tab
+3. Click on "Environment Variables" in the sidebar
+4. Add each variable with the corresponding value from your Firebase project
+5. Make sure all variables are set as "Production" environment variables
+
+Note: The environment variables with the `NEXT_PUBLIC_` prefix will be embedded in the client-side bundle and are visible to users. For sensitive data, use server-side environment variables without the `NEXT_PUBLIC_` prefix.
 
 ### Environment Variables
 
