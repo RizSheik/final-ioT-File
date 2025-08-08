@@ -1,0 +1,37 @@
+# Dependencies
+node_modules/
+
+# Build files
+.next/
+dist/
+build/
+out/
+
+# Environment variables
+.env*
+!.env.example
+
+# Firebase
+.firebase/
+.firebaserc
+firebase-debug.log
+firebase-export*.json
+
+# Logs
+*.log
+logs/
+
+# Editor/IDE
+.vscode/
+.idea/
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Test coverage
+coverage/
+.nyc_output/
+
+# Serverless
+.serverless/
