@@ -13,8 +13,23 @@ const firebaseConfig = {
   measurementId: process.env.NEXT_PUBLIC_FIREBASE_MEASUREMENT_ID
 };
 
-// Initialize Firebase
-const app = initializeApp(firebaseConfig);
+// Initialize Firebase with error handling
+let app;
+try {
+  app = initializeApp(firebaseConfig);
+} catch (error) {
+  console.error('Firebase initialization error:', error);
+  // Initialize with minimal config if env vars are missing
+  app = initializeApp({
+    apiKey: "demo-key",
+    authDomain: "demo.firebaseapp.com",
+    projectId: "demo-project",
+    storageBucket: "demo.appspot.com",
+    messagingSenderId: "123456789",
+    appId: "demo-app-id",
+    measurementId: "demo-measurement-id"
+  });
+}
 
 // Initialize Firestore
 export const db = getFirestore(app);
@@ -22,7 +37,12 @@ export const db = getFirestore(app);
 // Initialize Analytics (only on client side)
 let analytics;
 if (typeof window !== 'undefined') {
-  analytics = getAnalytics(app);
+  try {
+    analytics = getAnalytics(app);
+  } catch (error) {
+    console.error('Analytics initialization error:', error);
+    analytics = null;
+  }
 }
 
 export { analytics };

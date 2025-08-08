@@ -29,11 +29,16 @@ export function useAuthProvider() {
 
   useEffect(() => {
     // Check for stored auth
-    const storedUser = localStorage.getItem('auth-user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
+    try {
+      const storedUser = localStorage.getItem('auth-user');
+      if (storedUser) {
+        setUser(JSON.parse(storedUser));
+      }
+    } catch (error) {
+      console.error('Error reading stored user:', error);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
   }, []);
 
   const login = async (email: string, password: string) => {
