@@ -62,7 +62,7 @@ export function AlarmSystem() {
             // Set values for this playback
             oscillator.frequency.value = 800;
             oscillator.type = 'sine';
-            gainNode.gain.setValueAtTime(0.3, audioContext.currentTime);
+            gainNode.gain.setValueAtTime(0.8, audioContext.currentTime); // Increased from 0.3 to 0.8
             gainNode.gain.exponentialRampToValueAtTime(0.01, audioContext.currentTime + 0.5);
             
             // Start and stop oscillator

@@ -62,6 +62,34 @@ export function useSafeFirebaseData() {
 
     initializeData();
 
+    // Set up periodic refresh every 5 seconds as requested
+    const refreshInterval = setInterval(async () => {
+      console.log('useSafeFirebaseData: Periodic data refresh triggered (every 5 seconds)');
+      // The real-time listeners should already be handling updates,
+      // but we keep this interval as requested for periodic refresh
+      
+      // Run auto-fix check
+      try {
+        const result = await FirebaseService.checkAndFixIssues();
+        if (!result.success) {
+          console.warn('useSafeFirebaseData: Auto-fix check failed:', result.error);
+          if (result.retryable) {
+            console.log('useSafeFirebaseData: Issue is retryable, will try again in next cycle');
+          }
+        } else {
+          console.log('useSafeFirebaseData: Auto-fix check passed');
+        }
+      } catch (error) {
+        console.error('useSafeFirebaseData: Error during auto-fix check:', error);
+      }
+    }, 5000); // 5 seconds
+
+    return () => {
+      if (devicesUnsubscribe) devicesUnsubscribe();
+      if (alertsUnsubscribe) alertsUnsubscribe();
+      clearInterval(refreshInterval); // Clean up interval on unmount
+    };
+
     return () => {
       if (devicesUnsubscribe) devicesUnsubscribe();
       if (alertsUnsubscribe) alertsUnsubscribe();

@@ -15,7 +15,7 @@ export function AlertNotification() {
       audioRef.current = new Audio();
       // Using the same data URL for a simple beep sound as in alarm-system.tsx
       audioRef.current.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuR2O/Eeyw';
-      audioRef.current.volume = 0.5;
+      audioRef.current.volume = 1.0; // Increased from 0.5 to 1.0
       audioRef.current.addEventListener('error', (e) => {
         console.error('Audio playback error:', e);
       });
