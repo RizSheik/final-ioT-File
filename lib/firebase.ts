@@ -16,19 +16,35 @@ const firebaseConfig = {
 // Initialize Firebase with error handling
 let app;
 try {
+  console.log('Firebase: Initializing with config', {
+    apiKey: firebaseConfig.apiKey ? '***' : 'missing',
+    authDomain: firebaseConfig.authDomain,
+    projectId: firebaseConfig.projectId
+  });
   app = initializeApp(firebaseConfig);
+  console.log('Firebase: Successfully initialized');
 } catch (error) {
   console.error('Firebase initialization error:', error);
   // Initialize with minimal config if env vars are missing
-  app = initializeApp({
-    apiKey: "demo-key",
-    authDomain: "demo.firebaseapp.com",
-    projectId: "demo-project",
-    storageBucket: "demo.appspot.com",
-    messagingSenderId: "123456789",
-    appId: "demo-app-id",
-    measurementId: "demo-measurement-id"
-  });
+  try {
+    app = initializeApp({
+      apiKey: "demo-key",
+      authDomain: "demo.firebaseapp.com",
+      projectId: "demo-project",
+      storageBucket: "demo.appspot.com",
+      messagingSenderId: "123456789",
+      appId: "demo-app-id",
+      measurementId: "demo-measurement-id"
+    });
+    console.log('Firebase: Initialized with fallback config');
+  } catch (fallbackError) {
+    console.error('Firebase: Failed to initialize with fallback config', fallbackError);
+    // If all else fails, create a minimal app
+    app = initializeApp({
+      apiKey: "minimal-key",
+      projectId: "minimal-project"
+    }, 'minimal-app');
+  }
 }
 
 // Initialize Firestore

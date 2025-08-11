@@ -2,6 +2,11 @@ import { db } from './firebase';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, orderBy } from 'firebase/firestore';
 import { Device, Alert } from '@/types/device';
 
+// Ensure db is properly initialized
+if (!db) {
+  console.error('FirebaseService: Firestore not properly initialized');
+}
+
 export class FirebaseService {
   // Devices Collection
   static async getDevices(): Promise<Device[]> {
@@ -110,14 +115,19 @@ export class FirebaseService {
 
   // Real-time listeners
   static subscribeToDevices(callback: (devices: Device[]) => void) {
+    console.log('FirebaseService: Subscribing to devices');
     const devicesRef = collection(db, 'devices');
     return onSnapshot(devicesRef, (snapshot) => {
+      console.log('FirebaseService: Devices snapshot received', snapshot.size);
       const devices = snapshot.docs.map(doc => ({
         id: doc.id,
         ...doc.data(),
         lastUpdated: doc.data().lastUpdated?.toDate() || new Date()
       })) as Device[];
+      console.log('FirebaseService: Processed devices', devices.length);
       callback(devices);
+    }, (error) => {
+      console.error('FirebaseService: Error in devices subscription', error);
     });
   }
 

@@ -16,16 +16,36 @@ export function useSafeFirebaseData() {
 
     const initializeData = async () => {
       try {
+        console.log('useSafeFirebaseData: Starting data initialization');
         setLoading(true);
         setConnectionStatus('connecting');
         
-        console.log('Using real Firebase data service');
+        console.log('useSafeFirebaseData: Using real Firebase data service');
+        
+        // Set a timeout to prevent infinite loading
+        const timeoutId = setTimeout(() => {
+          console.log('useSafeFirebaseData: Data loading timeout, using fallback');
+          setLoading(false);
+          setConnectionStatus('fallback');
+        }, 10000); // 10 second timeout
+        
+        // Check if FirebaseService is properly initialized
+        if (!FirebaseService) {
+          console.error('useSafeFirebaseData: FirebaseService not properly initialized');
+          clearTimeout(timeoutId);
+          setLoading(false);
+          setConnectionStatus('fallback');
+          return;
+        }
         
         // Use real Firebase service
         devicesUnsubscribe = FirebaseService.subscribeToDevices((devices) => {
+          console.log('useSafeFirebaseData: Received devices update', devices.length);
+          clearTimeout(timeoutId); // Clear timeout when data is received
           setDevices(devices);
           setLoading(false);
           setConnectionStatus('connected');
+          console.log('useSafeFirebaseData: Data loading completed');
         });
 
         alertsUnsubscribe = FirebaseService.subscribeToAlerts((alerts) => {
