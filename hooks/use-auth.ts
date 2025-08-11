@@ -28,11 +28,22 @@ export function useAuthProvider() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Set a timeout to prevent infinite loading
-    const timeoutId = setTimeout(() => {
-      console.log('AuthProvider: Authentication check timeout, setting loading to false');
+    let timeoutId: NodeJS.Timeout | null = null;
+    let immediateTimeoutId: NodeJS.Timeout | null = null;
+    
+    // Set an immediate timeout to ensure loading is set to false
+    immediateTimeoutId = setTimeout(() => {
+      console.log('AuthProvider: Immediate timeout, setting loading to false');
       setLoading(false);
-    }, 5000); // 5 second timeout
+    }, 100); // 100ms timeout
+    
+    // Set a longer timeout for the authentication check
+    const startTimeout = () => {
+      timeoutId = setTimeout(() => {
+        console.log('AuthProvider: Authentication check timeout, setting loading to false');
+        setLoading(false);
+      }, 5000); // 5 second timeout
+    };
 
     // Check for stored auth
     console.log('AuthProvider: Starting authentication check');
@@ -41,9 +52,12 @@ export function useAuthProvider() {
       if (typeof window === 'undefined') {
         console.log('AuthProvider: Running on server, skipping localStorage check');
         setLoading(false);
-        clearTimeout(timeoutId);
+        if (immediateTimeoutId) clearTimeout(immediateTimeoutId);
         return;
       }
+      
+      // Start the timeout
+      startTimeout();
       
       console.log('AuthProvider: Checking localStorage for stored user');
       const storedUser = localStorage.getItem('auth-user');
@@ -55,12 +69,18 @@ export function useAuthProvider() {
       } else {
         console.log('AuthProvider: No stored user found');
       }
+      
+      // Clear timeouts and set loading to false
+      console.log('AuthProvider: Setting loading to false');
+      if (timeoutId) clearTimeout(timeoutId);
+      if (immediateTimeoutId) clearTimeout(immediateTimeoutId);
+      setLoading(false);
     } catch (error) {
       console.error('AuthProvider: Error reading stored user:', error);
-    } finally {
-      console.log('AuthProvider: Setting loading to false');
+      // Clear timeouts and set loading to false on error
+      if (timeoutId) clearTimeout(timeoutId);
+      if (immediateTimeoutId) clearTimeout(immediateTimeoutId);
       setLoading(false);
-      clearTimeout(timeoutId);
     }
   }, []);
 

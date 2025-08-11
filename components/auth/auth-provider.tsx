@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { useAuthProvider, AuthContext } from "@/hooks/use-auth";
 import { EnhancedLoginForm } from "./enhanced-login-form";
 import { EnhancedSidebar } from "@/components/layout/enhanced-sidebar";
@@ -16,11 +17,22 @@ function AppContent({ children }: { children: React.ReactNode }) {
   const auth = useAuthProvider();
   const { actualTheme } = useTheme();
 
-  if (auth.loading) {
+  // Add a timeout to prevent infinite loading
+  const [forceLoaded, setForceLoaded] = useState(false);
+  
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      setForceLoaded(true);
+    }, 3000); // 3 second timeout
+    
+    return () => clearTimeout(timeoutId);
+  }, []);
+
+  if (auth.loading && !forceLoaded) {
     return (
       <div className={`min-h-screen flex items-center justify-center transition-colors ${
-        actualTheme === 'dark' 
-          ? 'bg-gradient-to-br from-gray-900 to-gray-800' 
+        actualTheme === 'dark'
+          ? 'bg-gradient-to-br from-gray-900 to-gray-800'
           : 'bg-gradient-to-br from-blue-50 to-indigo-50'
       }`}>
         <div className="flex flex-col items-center space-y-4">
