@@ -6,20 +6,10 @@ import { toast } from "@/hooks/use-toast";
 
 export function AlertNotification() {
   const { alerts } = useSafeFirebaseData();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastAlertRef = useRef<string | null>(null);
 
   useEffect(() => {
-    // Create audio element for alert sound
-    if (typeof window !== 'undefined' && !audioRef.current) {
-      audioRef.current = new Audio();
-      // Using the same data URL for a simple beep sound as in alarm-system.tsx
-      audioRef.current.src = 'data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuR2O/Eeyw';
-      audioRef.current.volume = 1.0; // Increased from 0.5 to 1.0
-      audioRef.current.addEventListener('error', (e) => {
-        console.error('Audio playback error:', e);
-      });
-    }
+    // Audio element is created directly in the playSound function
   }, []);
 
   useEffect(() => {
@@ -47,8 +37,14 @@ export function AlertNotification() {
         }
 
         // Play notification sound only if enabled
-        if (soundEnabled && audioRef.current) {
-          audioRef.current.play().catch(console.error);
+        if (soundEnabled) {
+          try {
+            const audio = new Audio('data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmwhBTuR2O/Eeyw');
+            audio.volume = 1.0; // Increased from 0.5 to 1.0
+            audio.play().catch(console.error);
+          } catch (error) {
+            console.error('Audio playback error:', error);
+          }
         }
 
         const getIcon = () => {

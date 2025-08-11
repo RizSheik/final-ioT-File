@@ -6,7 +6,6 @@ import { toast } from "@/hooks/use-toast";
 
 export function AlarmSystem() {
   const { alerts } = useSafeFirebaseData();
-  const audioRef = useRef<HTMLAudioElement | null>(null);
   const lastAlertRef = useRef<string | null>(null);
 
   useEffect(() => {

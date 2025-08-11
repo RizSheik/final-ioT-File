@@ -89,11 +89,6 @@ export function useSafeFirebaseData() {
       if (alertsUnsubscribe) alertsUnsubscribe();
       clearInterval(refreshInterval); // Clean up interval on unmount
     };
-
-    return () => {
-      if (devicesUnsubscribe) devicesUnsubscribe();
-      if (alertsUnsubscribe) alertsUnsubscribe();
-    };
   }, []);
 
   // Device management functions with real Firebase
